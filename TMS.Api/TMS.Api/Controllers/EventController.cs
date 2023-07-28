@@ -57,6 +57,8 @@ namespace TMS.Api.Controllers
         [HttpPatch]
         public async Task<ActionResult<EventPatchDTO>> PatchEvent(EventPatchDTO eventPatch)
         {
+            if (eventPatch == null) throw new ArgumentNullException(nameof(eventPatch));
+
             var eventEntity = await _eventRepository.GetById(eventPatch.EventId);
             
             if (eventEntity == null)

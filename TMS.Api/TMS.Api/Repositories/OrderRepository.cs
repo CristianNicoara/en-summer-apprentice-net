@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TMS.Api.Exceptions;
 using TMS.Api.Models;
 
 namespace TMS.Api.Repositories
@@ -22,6 +23,10 @@ namespace TMS.Api.Repositories
         public async Task<Order> GetById(int id)
         {
             var order = await _dbContext.Orders.Where(e => e.OrderId == id).FirstOrDefaultAsync();
+
+            if (order == null) {
+                throw new EntityNotFoundException(id, nameof(Order));
+            }
 
             return order;
         }

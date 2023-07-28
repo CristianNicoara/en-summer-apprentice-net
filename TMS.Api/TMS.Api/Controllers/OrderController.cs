@@ -55,6 +55,8 @@ namespace TMS.Api.Controllers
         [HttpPatch]
         public async Task<ActionResult<OrderPatchDTO>> PatchOrder(OrderPatchDTO orderPatch)
         {
+            if (orderPatch == null) throw new ArgumentNullException(nameof(orderPatch));
+
             var orderEntity = await _orderRepository.GetById(orderPatch.OrderId);
 
             var ticket = await _ticketCategoryRepository.GetById(orderPatch.TicketCategoryId ?? 0);

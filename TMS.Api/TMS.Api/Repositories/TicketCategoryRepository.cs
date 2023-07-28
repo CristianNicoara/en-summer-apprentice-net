@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TMS.Api.Exceptions;
 using TMS.Api.Models;
 
 namespace TMS.Api.Repositories
@@ -14,6 +15,11 @@ namespace TMS.Api.Repositories
         public async Task<TicketCategory> GetById(int id)
         {
             var ticketCategory = await _dbContext.TicketCategories.Where(e => e.TicketCategoryId == id).FirstOrDefaultAsync();
+
+            if(ticketCategory == null)
+            {
+                throw new EntityNotFoundException(id, nameof(TicketCategory));
+            }
 
             return ticketCategory;
         }

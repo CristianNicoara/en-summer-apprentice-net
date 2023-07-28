@@ -1,3 +1,4 @@
+using TMS.Api.Middleware;
 using TMS.Api.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +25,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 
