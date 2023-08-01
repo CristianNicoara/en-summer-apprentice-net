@@ -4,7 +4,7 @@ namespace TMS.Api.Repositories
 {
     public interface IOrderRepository
     {
-        IEnumerable<Order> GetOrders();
+        Task<IEnumerable<Order>> GetOrders();
 
         Task<Order> GetById(int id);
 

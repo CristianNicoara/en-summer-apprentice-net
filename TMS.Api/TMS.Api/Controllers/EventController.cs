@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using TMS.Api.Exceptions;
 using TMS.Api.Models;
 using TMS.Api.Models.DTOs;
 using TMS.Api.Repositories;
@@ -26,16 +27,11 @@ namespace TMS.Api.Controllers
         public ActionResult<List<EventDTO>> GetEvents() {
             var events = _eventRepository.GetEvents().ToList();
 
-            var dtoEvents = events.Select(e => new EventDTO()
+            var dtoEvents = _mapper.Map<IEnumerable<EventDTO>>(events);
+            for (int i = 0; i < dtoEvents.Count(); i++)
             {
-                EventId = e.EventId,
-                Venue = _mapper.Map<VenueDTO>(e.Venue),
-                Type = e.EventType?.EventTypeName ?? string.Empty,
-                EventDescription = e.EventDescription ?? string.Empty,
-                EventName = e.EventName ?? string.Empty,
-                EventStartDate = e.EventStartDate ?? DateTime.MinValue,
-                EventEndDate = e.EventEndDate ?? DateTime.MinValue
-            });
+                dtoEvents.ElementAt(i).Type = events.ElementAt(i).EventType?.EventTypeName ?? string.Empty;
+            }
 
             return Ok(dtoEvents);
         }
@@ -43,15 +39,25 @@ namespace TMS.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<EventDTO>> GetEventById(int id)
         {
-            var @event = await _eventRepository.GetById(@id);
+            try
+            {
+                var @event = await _eventRepository.GetById(id);
 
-            if (@event == null)
-                return NotFound();
+                if (@event == null)
+                    return NotFound();
 
-            var dtoEvent = _mapper.Map<EventDTO>(@event);
-            dtoEvent.Type = @event.EventType?.EventTypeName ?? string.Empty;
+                var dtoEvent = _mapper.Map<EventDTO>(@event);
+                dtoEvent.Type = @event.EventType?.EventTypeName ?? string.Empty;
 
-            return Ok(dtoEvent);
+                return Ok(dtoEvent);
+            }catch (EntityNotFoundException ex)
+            {
+                throw new EntityNotFoundException(ex.Message);
+            } 
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         [HttpPatch]

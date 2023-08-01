@@ -180,3 +180,4 @@ D:\Endava\.NET\.NetProject\en-summer-apprentice-net\TMS.Api\TMS.Api\obj\Debug\ne
 D:\Endava\.NET\.NetProject\en-summer-apprentice-net\TMS.Api\TMS.Api\obj\Debug\net6.0\TMS.Api.pdb
 D:\Endava\.NET\.NetProject\en-summer-apprentice-net\TMS.Api\TMS.Api\obj\Debug\net6.0\TMS.Api.genruntimeconfig.cache
 D:\Endava\.NET\.NetProject\en-summer-apprentice-net\TMS.Api\TMS.Api\obj\Debug\net6.0\ref\TMS.Api.dll
+D:\Endava\.NET\.NetProject\en-summer-apprentice-net\TMS.Api\TMS.Api\bin\Debug\net6.0\Moq.dll

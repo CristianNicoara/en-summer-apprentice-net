@@ -31,7 +31,7 @@ namespace TMS.Api.Repositories
             return order;
         }
 
-        public IEnumerable<Order> GetOrders()
+        public async Task<IEnumerable<Order>> GetOrders()
         {
             var orders = _dbContext.Orders;
 

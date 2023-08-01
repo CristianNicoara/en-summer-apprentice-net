@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TMS.Api.Exceptions;
 using TMS.Api.Models;
 using TMS.Api.Models.DTOs;
 using TMS.Api.Repositories;
@@ -23,18 +24,11 @@ namespace TMS.Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<OrderDTO>> GetOrders()
+        public async Task<ActionResult<List<OrderDTO>>> GetOrders()
         {
-            var orders = _orderRepository.GetOrders();
+            var orders = await _orderRepository.GetOrders();
 
-            var dtoOrders = orders.Select(o => new OrderDTO()
-            {
-                OrderId = o.OrderId,
-                OrderedAt = o.OrderedAt,
-                TicketCategoryId = o.TicketCategoryId,
-                NumberOfTickets = o.NumberOfTickets,
-                TotalPrice = o.TotalPrice
-            });
+            var dtoOrders = _mapper.Map<IEnumerable<OrderDTO>>(orders);
 
             return Ok(dtoOrders);
         }
@@ -42,14 +36,25 @@ namespace TMS.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<EventDTO>> GetOrderById(int id)
         {
-            var order = await _orderRepository.GetById(id);
+            try
+            {
+                var order = await _orderRepository.GetById(id);
 
-            if (order == null)
-                return NotFound();
+                var dtoOrder = _mapper.Map<OrderDTO>(order);
 
-            var dtoOrder = _mapper.Map<OrderDTO>(order);
+                if (dtoOrder == null)
+                    return NotFound();
 
-            return Ok(dtoOrder);
+                return Ok(dtoOrder);
+            }
+            catch (EntityNotFoundException ex)
+            {
+                throw new EntityNotFoundException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         [HttpPatch]
